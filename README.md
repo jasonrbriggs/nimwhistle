@@ -8,6 +8,8 @@ Usage:
 * `nimwhistle c <url>` to compress a URL
 * `nimwhistle x <url> <htdocs>` to expand a URL (using the base htdocs directory as specified to find the right file/path)
 * `nimwhistle cgi <htdocs>` to provide CGI-based redirection of a compressed URL from the path /u/
+* `nimwhistle a <path> <htdocs>` to add a relative URL path to the file `$htdocs/nimwhistle.urls`. Each line in the file results in the redirect `/u/f1`, `/u/f2`, `/u/f3`, etc
+
 
 Example Apache2 configuration for CGI:
 
