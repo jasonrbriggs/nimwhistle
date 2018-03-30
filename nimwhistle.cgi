@@ -1,3 +1,4 @@
 #! /bin/sh
 
-./nimwhistle cgi /home/jasonbriggs/dev/sites/jasonrbriggs.com
+# replace the directory below with the root htdocs directory of your web server
+./nimwhistle cgi /var/www.jasonrbriggs.com
