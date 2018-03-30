@@ -100,7 +100,6 @@ proc addFixedUrl(url:string, basedir:string) =
     var fname = joinPath(basedir, "nimwhistle.urls")
     var f = open(fname, fmAppend)
     var line: array[2000, char]
-    echo url
     var i = 0
     for c in url:
         line[i] = c
@@ -110,7 +109,7 @@ proc addFixedUrl(url:string, basedir:string) =
     close(f)
 
 
-proc compress(url:string):string =
+proc compress*(url:string):string =
     var u = parseUri(url)
     var client = newHttpClient()
     var dirpath = substr(u.path, 0, rfind(u.path, "/"))
@@ -160,7 +159,7 @@ proc expandFixed(num:string, basedir:string):string =
     return url
 
 
-proc expand(url:string, basedir:string):string =
+proc expand*(url:string, basedir:string):string =
     var u = parseUri(url)
     if not startsWith(u.path, "/u/"):
         raise newException(ValueError, "Unrecognised url path '" & u.path & "'")
@@ -219,47 +218,47 @@ proc expand(url:string, basedir:string):string =
     return rtn
 
 
-let args = docopt(doc, version = "0.1")
+if isMainModule:
+    let args = docopt(doc, version = "0.1")
 
-
-if args["a"]:
-    var url = $args["<url>"]
-    var basedir = $args["<htdocs>"]
-
-    addFixedUrl(url, basedir)
-
-elif args["c"]:
-    try:
-        var url = $args["<url>"]
-        echo compress(url)
-    except:
-        echo getCurrentExceptionMsg()
-        quit(1)
-elif args["x"]:
-    try:
+    if args["a"]:
         var url = $args["<url>"]
         var basedir = $args["<htdocs>"]
-        echo expand(url, basedir)
-    except:
-        echo getCurrentExceptionMsg()
-        quit(1)
-elif args["cgi"]:
-    try:
-        var htdocs = $args["<htdocs>"]
-        var uri = getRequestURI()
-        var expandedUri = expand(uri, htdocs)
 
-        writeLine(stdout, "Status: 301 Moved Permanently")
-        writeLine(stdout, "Location: " & expandedUri)
-        writeContentType()
-        writeLine(stdout, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">")
-        writeLine(stdout, "<html><body>" & expandedUri & "<body></html>")
-    except:
-        var msg = getCurrentExceptionMsg()
-        writeLine(stdout, "Status: 404 Not found")
-        writeContentType()
-        writeLine(stdout, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">")
-        writeLine(stdout, "<html><body>")
-        writeLine(stdout, "Unable to redirect. " & msg)
-        writeLine(stdout, "<body></html>")
+        addFixedUrl(url, basedir)
+
+    elif args["c"]:
+        try:
+            var url = $args["<url>"]
+            echo compress(url)
+        except:
+            echo getCurrentExceptionMsg()
+            quit(1)
+    elif args["x"]:
+        try:
+            var url = $args["<url>"]
+            var basedir = $args["<htdocs>"]
+            echo expand(url, basedir)
+        except:
+            echo getCurrentExceptionMsg()
+            quit(1)
+    elif args["cgi"]:
+        try:
+            var htdocs = $args["<htdocs>"]
+            var uri = getRequestURI()
+            var expandedUri = expand(uri, htdocs)
+
+            writeLine(stdout, "Status: 301 Moved Permanently")
+            writeLine(stdout, "Location: " & expandedUri)
+            writeContentType()
+            writeLine(stdout, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">")
+            writeLine(stdout, "<html><body>" & expandedUri & "<body></html>")
+        except:
+            var msg = getCurrentExceptionMsg()
+            writeLine(stdout, "Status: 404 Not found")
+            writeContentType()
+            writeLine(stdout, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">")
+            writeLine(stdout, "<html><body>")
+            writeLine(stdout, "Unable to redirect. " & msg)
+            writeLine(stdout, "<body></html>")
 
