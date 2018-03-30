@@ -89,7 +89,7 @@ proc dateasnum(url:string):int =
 
 
 proc ftype(fname:string):string =
-    if endsWith(fname, ".html"):
+    if endsWith(fname, ".html") or endsWith(fname, ".htm"):
         return "b"
     elif endsWith(fname, ".text") or endsWith(fname, ".txt"):
         return "t"

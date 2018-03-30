@@ -1,7 +1,13 @@
 # nimwhistle
 Algorithmic url shortener
 
-An algorithmic url shortener based on the ideas in Whistle with some additional enhancements (http://tantek.pbworks.com/w/page/21743973/Whistle).
+An algorithmic url shortener based on the ideas in Whistle with some additional enhancements (see http://tantek.pbworks.com/w/page/21743973/Whistle for more information).
+
+
+Assumptions:
+* files must have extensions
+* shortened paths must be of the form: `/YYYY/mm/dd/filename.ext`
+
 
 Usage:
 
