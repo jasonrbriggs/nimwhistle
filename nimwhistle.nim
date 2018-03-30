@@ -19,7 +19,7 @@ import algorithm
 import docopt
 
 let doc = """
-nimwhistle. Algorithmic url shortener based on the ideas in Whistle (http://tantek.pbworks.com/w/page/21743973/Whistle)
+nimwhistle. Algorithmic url shortener based on the ideas in Whistle with some additional enhancements (http://tantek.pbworks.com/w/page/21743973/Whistle)
 
 Usage:
   nimwhistle a <url> <htdocs>
