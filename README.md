@@ -1,7 +1,6 @@
 # nimwhistle
-Algorithmic url shortener
 
-An algorithmic url shortener based on the ideas in Whistle with some additional enhancements (see http://tantek.pbworks.com/w/page/21743973/Whistle for more information).
+An algorithmic url shortener based on the ideas in Whistle, with some additional enhancements (see http://tantek.pbworks.com/w/page/21743973/Whistle for more information) for dealing with non-standard "fixed" URLs.
 
 
 Assumptions:
