@@ -96,7 +96,7 @@ proc ftype(fname:string):string =
     return "";
 
 
-proc addFixedUrl(url:string, basedir:string) =
+proc addFixedUrl*(url:string, basedir:string) =
     var fname = joinPath(basedir, "nimwhistle.urls")
     var f = open(fname, fmAppend)
     var line: array[2000, char]
@@ -148,6 +148,16 @@ proc compress*(url:string):string =
     return u.scheme & "://" & u.hostname & "/u/" & firstchar & ft & sxg
 
 
+proc slen(url:string):int =
+    var i = 0
+    for c in url:
+        if c != '\0':
+            i += 1
+        else:
+            break
+    return i
+
+
 proc expandFixed(num:string, basedir:string):string =
     var idx = parseInt(num) - 1
     var pos = idx * 2000
@@ -156,7 +166,14 @@ proc expandFixed(num:string, basedir:string):string =
     var f = open(fname, fmRead)
     setFilePos(f, pos)
     var url = readLine(f)
-    return url
+    var l = slen(url)
+    var rtn = newStringOfCap(l)
+    for c in url:
+        if c != '\0':
+            rtn.add(c)
+        else:
+            break
+    return rtn
 
 
 proc expand*(url:string, basedir:string):string =
@@ -209,7 +226,6 @@ proc expand*(url:string, basedir:string):string =
         raise newException(ValueError, "Unable to find a matching file in " & path & " (idx:" & idx.`$` & ")")
 
     var rtn = ""
-
     if u.scheme != nil and u.scheme != "":
         rtn &= u.scheme & "://" & u.hostname
 
