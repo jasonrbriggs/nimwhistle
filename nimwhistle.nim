@@ -73,14 +73,6 @@ proc sxgtonum(s:string):int =
     return n
 
 
-proc hasalttxt(node:XmlNode):bool =
-    var imgs = findAll(node, "img")
-    for img in imgs:
-        if img.attrs != nil and hasKey(img.attrs, "alt") and img.attrs["alt"] == "[TXT]":
-            return true
-    return false
-
-
 proc dateasnum(url:string):int =
     var (first, last) = findBounds(url, datePattern)
     var date = substr(url, first, last)
@@ -89,10 +81,14 @@ proc dateasnum(url:string):int =
 
 
 proc ftype(fname:string):string =
-    if endsWith(fname, ".html") or endsWith(fname, ".htm"):
+    var (_, _, e) = splitFile(fname)
+    var ext = toLowerAscii(e)
+    if ext == ".html" or ext == ".htm":
         return "b"
-    elif endsWith(fname, ".text") or endsWith(fname, ".txt"):
+    elif ext == ".text" or ext == ".txt":
         return "t"
+    elif ext == ".png" or ext == ".gif" or ext == ".jpg" or ext == ".jpeg":
+        return "p"
     return "";
 
 
@@ -129,16 +125,15 @@ proc compress*(url:string):string =
     var idx = 1
     var actualidx = -1
     for tr in doc.findAll("tr"):
-        if hasalttxt(tr):
-            var anchors = tr.findAll("a")
-            for anchor in anchors:
-                if anchor.attrs != nil and hasKey(anchor.attrs, "href"):
-                    var href = anchor.attrs["href"]
-                    if href == filename:
-                        actualidx = idx
-                        break
-                    if ftype(href) == ft:
-                        idx += 1
+        var anchors = tr.findAll("a")
+        for anchor in anchors:
+            if anchor.attrs != nil and hasKey(anchor.attrs, "href"):
+                var href = anchor.attrs["href"]
+                if href == filename:
+                    actualidx = idx
+                    break
+                if ftype(href) == ft:
+                    idx += 1
 
     if actualidx < 0:
         raise newException(ValueError, "Unable to find match for " & filename & " in " & dirpath)

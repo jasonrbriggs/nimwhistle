@@ -7,9 +7,19 @@ import nimwhistle
 suite "nimwhistle unit tests":
     var websiteDir = joinPath(getCurrentDir(), "tests", "website")
 
-    test "compress url":
+    test "compress html url":
         var compressedUrl = compress("http://jasonrbriggs.com/journal/2018/03/04/restarting-the-bounce-game-revisited.html")
         check compressedUrl == "http://jasonrbriggs.com/u/jbMcEA1"
+
+    test "compress text url":
+        echo ""
+
+    test "compress image url":
+        var compressedUrl1 = compress("http://jasonrbriggs.com/journal/2017/07/16/indentation1.png")
+        var compressedUrl2 = compress("http://jasonrbriggs.com/journal/2017/07/16/indentation2.png")
+
+        check compressedUrl1 == "http://jasonrbriggs.com/u/jpLsqq2"
+        check compressedUrl2 == "http://jasonrbriggs.com/u/jpLsqq4"
 
     test "throws error when date pattern not found":
         expect(ValueError):
@@ -23,9 +33,16 @@ suite "nimwhistle unit tests":
         expect(ValueError):
             discard compress("http://jasonrbriggs.com/journal/2018/03/04/blah.html")
 
-    test "expand url":
+    test "expand html url":
         var expandedUrl = expand("http://jasonrbriggs.com/u/jbMcEA1", websiteDir)
         check expandedUrl == "http://jasonrbriggs.com/journal/2018/03/04/restarting-the-bounce-game-revisited.html"
+
+    test "expand image url":
+        var expandedUrl1 = expand("http://jasonrbriggs.com/u/jpLsqq2", websiteDir)
+        var expandedUrl2 = expand("http://jasonrbriggs.com/u/jpLsqq4", websiteDir)
+
+        check expandedUrl1 == "http://jasonrbriggs.com/journal/2017/07/16/indentation1.png"
+        check expandedUrl2 == "http://jasonrbriggs.com/journal/2017/07/16/indentation2.png"
 
     test "throws error when no matching base dir is found":
         expect(ValueError):
