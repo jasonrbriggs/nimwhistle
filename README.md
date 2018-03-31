@@ -6,6 +6,7 @@ An algorithmic url shortener based on the ideas in Whistle, with some additional
 Assumptions:
 * files must have extensions
 * shortened paths must be of the form: `/YYYY/mm/dd/filename.ext`
+* only html/htm (prefix 'b'), text/txt (prefix 't'), png/gif/jpeg/jpg (prefix 'p') are currently supported
 
 
 Usage:
