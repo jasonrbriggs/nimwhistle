@@ -12,7 +12,8 @@ suite "nimwhistle unit tests":
         check compressedUrl == "http://jasonrbriggs.com/u/jbMcEA1"
 
     test "compress text url":
-        echo ""
+        var compressedUrl = compress("http://jasonrbriggs.com/journal/2018/03/04/restarting-the-bounce-game-revisited.text")
+        assert compressedUrl == "http://jasonrbriggs.com/u/jtMcEA1"
 
     test "compress image url":
         var compressedUrl1 = compress("http://jasonrbriggs.com/journal/2017/07/16/indentation1.png")
@@ -36,6 +37,10 @@ suite "nimwhistle unit tests":
     test "expand html url":
         var expandedUrl = expand("http://jasonrbriggs.com/u/jbMcEA1", websiteDir)
         check expandedUrl == "http://jasonrbriggs.com/journal/2018/03/04/restarting-the-bounce-game-revisited.html"
+
+    test "expand url overriding base url":
+        var expandedUrl = expand("http://jasonrbriggs.com/u/jbMcEA1", websiteDir, "http://briggs.nz")
+        check expandedUrl == "http://briggs.nz/journal/2018/03/04/restarting-the-bounce-game-revisited.html"
 
     test "expand image url":
         var expandedUrl1 = expand("http://jasonrbriggs.com/u/jpLsqq2", websiteDir)

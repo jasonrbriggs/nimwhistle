@@ -25,7 +25,7 @@ Usage:
   nimwhistle a <url> <htdocs>
   nimwhistle c <url>
   nimwhistle x <url> <htdocs>
-  nimwhistle cgi <htdocs>
+  nimwhistle cgi <htdocs> [<overrideBaseUrl>]
 
 Commands:
     a           Add a URL to a file (used for f1..x shortened URLs. e.g. /u/f10)
@@ -171,7 +171,7 @@ proc expandFixed(num:string, basedir:string):string =
     return rtn
 
 
-proc expand*(url:string, basedir:string):string =
+proc expand*(url:string, basedir:string, overrideBaseUrl:string = nil):string =
     var u = parseUri(url)
     if not startsWith(u.path, "/u/"):
         raise newException(ValueError, "Unrecognised url path '" & u.path & "'")
@@ -221,12 +221,33 @@ proc expand*(url:string, basedir:string):string =
         raise newException(ValueError, "Unable to find a matching file in " & path & " (idx:" & idx.`$` & ")")
 
     var rtn = ""
-    if u.scheme != nil and u.scheme != "":
+    if overrideBaseUrl != nil and overrideBaseUrl != "":
+        rtn &= overrideBaseUrl
+    elif u.scheme != nil and u.scheme != "":
         rtn &= u.scheme & "://" & u.hostname
 
     rtn &= "/" & path & "/" & filename
 
     return rtn
+
+proc cgiredirect*(htdocs:string, overrideBaseUrl:string) =
+    try:
+        var uri = getRequestURI()
+        var expandedUri = expand(uri, htdocs, overrideBaseUrl)
+
+        writeLine(stdout, "Status: 301 Moved Permanently")
+        writeLine(stdout, "Location: " & expandedUri)
+        writeContentType()
+        writeLine(stdout, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">")
+        writeLine(stdout, "<html><body>" & expandedUri & "<body></html>")
+    except:
+        var msg = getCurrentExceptionMsg()
+        writeLine(stdout, "Status: 404 Not found")
+        writeContentType()
+        writeLine(stdout, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">")
+        writeLine(stdout, "<html><body>")
+        writeLine(stdout, "Unable to redirect. " & msg)
+        writeLine(stdout, "<body></html>")
 
 
 if isMainModule:
@@ -249,27 +270,12 @@ if isMainModule:
         try:
             var url = $args["<url>"]
             var basedir = $args["<htdocs>"]
-            echo expand(url, basedir)
+            echo expand(url, basedir, nil)
         except:
             echo getCurrentExceptionMsg()
             quit(1)
     elif args["cgi"]:
-        try:
-            var htdocs = $args["<htdocs>"]
-            var uri = getRequestURI()
-            var expandedUri = expand(uri, htdocs)
+        var htdocs = $args["<htdocs>"]
+        var overrideBaseUrl = $args["<overrideBaseUrl>"]
 
-            writeLine(stdout, "Status: 301 Moved Permanently")
-            writeLine(stdout, "Location: " & expandedUri)
-            writeContentType()
-            writeLine(stdout, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">")
-            writeLine(stdout, "<html><body>" & expandedUri & "<body></html>")
-        except:
-            var msg = getCurrentExceptionMsg()
-            writeLine(stdout, "Status: 404 Not found")
-            writeContentType()
-            writeLine(stdout, "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">")
-            writeLine(stdout, "<html><body>")
-            writeLine(stdout, "Unable to redirect. " & msg)
-            writeLine(stdout, "<body></html>")
-
+        cgiredirect(htdocs, overrideBaseUrl)

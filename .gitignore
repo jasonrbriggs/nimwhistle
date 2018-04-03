@@ -1,3 +1,7 @@
 nimcache/
 nimwhistle
 basic
+tests/website/nimwhistle.urls
+tests/basictests
+tests/cgitests
+cgiredirect.txt

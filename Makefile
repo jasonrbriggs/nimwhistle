@@ -10,4 +10,5 @@ cleantests:
 	rm -f tests/website/nimwhistle.urls
 
 tests: cleantests
-	nim c --path:.. -r tests/basic.nim
+	nim c --path:.. -r tests/basictests.nim
+	nim c --path:.. -r tests/cgitests.nim
