@@ -1,7 +1,7 @@
-# NOTE: I'm archiving this project. The code is (mostly) bundled with [baker](https://github.com/jasonrbriggs/baker) (static site generator), and rather than CGI-based, it just updated .htaccess with rewrite rules, which better suits my purposes.
+# NOTE: I'm archiving this project. The code is (mostly) bundled with [baker](https://github.com/jasonrbriggs/baker) (static site generator), and rather than CGI-based, it just updates the root .htaccess file with rewrite rules, which better suits my purposes.
 
 
-# nimwhistle
+## nimwhistle
 
 An algorithmic url shortener based on the ideas in Whistle, with some additional enhancements (see http://tantek.pbworks.com/w/page/21743973/Whistle for more information) for dealing with non-standard "fixed" URLs.
 
